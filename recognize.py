@@ -15,7 +15,7 @@ import os
 
 
 def identify(imgaepath, detector='face_detection_model', embedding_model='openface_nn4.small2.v1.t7',
-	recognizer='output/recognizer.pickle', le='output/le.pickle', Confidence=0.5):
+	recognizer='output/recognizer2.pickle', le='output/le.pickle', Confidence=0.5):
 	#load the images
 	imagePaths = list(paths.list_images(imgaepath))
 
