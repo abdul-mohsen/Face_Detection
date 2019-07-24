@@ -24,7 +24,7 @@ ap.add_argument("-e", "--embeddings", required=False, default='output/embeddings
 	help="path to serialized db of facial embeddings")
 ap.add_argument("-E", "--Embeddings", required=False, default='output/embeddings_test.pickle',
 	help="path to serialized db of facial embeddings")
-ap.add_argument("-r", "--recognizer", required=False, default= 'output/recognizer2.pickle',
+ap.add_argument("-r", "--recognizer", required=False, default= 'output/recognizer3.pickle',
 	help="path to output model trained to recognize faces")
 ap.add_argument("-l", "--le", required=False, default= 'output/le.pickle',
 	help="path to output label encoder")
@@ -68,11 +68,11 @@ t0 = time()
 param_grid = {'learning_rate_init':[1e-5,5e-5,1e-4,0.001,0.005],
              'alpha':[1e-5,1e-6,1e-7],
              'epsilon':[1e-7,1e-8,1e-9],
-             'tol':[1e-2,1e-3]
+             'tol':[1e-1,1e-2,1e-3]
              }
 
 # Setting the parmeter for the training
-mlp = GridSearchCV(MLPClassifier(hidden_layer_sizes=(256, 128, 64, 32), learning_rate='adaptive'),
+mlp = GridSearchCV(MLPClassifier(hidden_layer_sizes=(256, 128, 64), learning_rate='adaptive'),
                    param_grid, cv=10, iid=False)
 
 # Start training
