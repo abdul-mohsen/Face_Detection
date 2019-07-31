@@ -15,7 +15,7 @@ import os
 
 
 def identify(imgaepath, detector='face_detection_model', embedding_model='openface_nn4.small2.v1.t7',
-	recognizer='output/recognizer2.pickle', le='output/le.pickle', Confidence=0.5):
+	recognizer='output/recognizer.pickle', le='output/le.pickle', Confidence=0.5):
 	#load the images
 	imagePaths = list(paths.list_images(imgaepath))
 
@@ -40,12 +40,12 @@ def identify(imgaepath, detector='face_detection_model', embedding_model='openfa
 		# load the image, resize it to have a width of 600 pixels (while
 		# maintaining the aspect ratio), and then grab the image dimensions
 		image = cv2.imread(imagePath)
-		image = imutils.resize(image, width=600)
+		# image = imutils.resize(image, width=600)
 		(h, w) = image.shape[:2]
 
 		# construct a blob from the image
 		imageBlob = cv2.dnn.blobFromImage(
-			cv2.resize(image, (300, 300)), 1.0, (300, 300),
+			image, 1.0, image[:-1],
 			(104.0, 177.0, 123.0), swapRB=False, crop=True)
 
 		# apply OpenCV's deep learning-based face detector to localize
@@ -79,7 +79,7 @@ def identify(imgaepath, detector='face_detection_model', embedding_model='openfa
 				# through our face embedding model to obtain the 128-d
 				# quantification of the face
 				faceBlob = cv2.dnn.blobFromImage(face, 1.0 / 255, (96, 96),
-					(0, 0, 0), swapRB=True, crop=False)
+					(0, 0, 0), swapRB=True, crop=True)
 				embedder.setInput(faceBlob)
 				vec = embedder.forward()
 
@@ -102,25 +102,23 @@ def identify(imgaepath, detector='face_detection_model', embedding_model='openfa
 
 	# intilization 
 	ave_pro = {}
-	folders = os.listdir("dataset")
 	numberOfFolder = len(imagePaths)
 
 	# create a dic
-	for name in folders:
+	for name in le.classes_:
 		ave_pro.update({name:0.0})
 
 	# sum the probability 
 	for image in listOfNames:
 		for name, pro in image:
-			print(name , pro)
 			ave_pro[name] += pro
 
 	# ave all the probability and elminate	
-	for name in os.listdir("dataset"):
+	for name in le.classes_:
 		ave_pro[name] /= numberOfFolder
 		if ave_pro[name] <= 0.0:
 			ave_pro.pop(name, None)
-
+	print(ave_pro)
 	return ave_pro
 
-print(identify('images'))
+identify('images')

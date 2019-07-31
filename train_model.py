@@ -20,11 +20,11 @@ from time import time
 
 # construct the argument parser and parse the arguments
 ap = argparse.ArgumentParser()
-ap.add_argument("-e", "--embeddings", required=False, default='output/embeddings_train.pickle',
+ap.add_argument("-e", "--embeddings", required=False, default='output/embeddings_trainX.pickle',
 	help="path to serialized db of facial embeddings")
-ap.add_argument("-E", "--Embeddings", required=False, default='output/embeddings_test.pickle',
+ap.add_argument("-E", "--Embeddings", required=False, default='output/embeddings_testX.pickle',
 	help="path to serialized db of facial embeddings")
-ap.add_argument("-r", "--recognizer", required=False, default= 'output/recognizer3.pickle',
+ap.add_argument("-r", "--recognizer", required=False, default= 'output/recognizer10.pickle',
 	help="path to output model trained to recognize faces")
 ap.add_argument("-l", "--le", required=False, default= 'output/le.pickle',
 	help="path to output label encoder")
@@ -65,15 +65,15 @@ print("Fitting the classifier to the training set")
 t0 = time()
 
 # The value that grid search will go over
-param_grid = {'learning_rate_init':[1e-5,5e-5,1e-4,0.001,0.005],
-             'alpha':[1e-5,1e-6,1e-7],
+param_grid = {'learning_rate_init':[1e-3],
+             'alpha':[1e-6,1e-7, 1e-8],
              'epsilon':[1e-7,1e-8,1e-9],
-             'tol':[1e-1,1e-2,1e-3]
+             'tol':[1e-4, 1e-5]
              }
 
 # Setting the parmeter for the training
-mlp = GridSearchCV(MLPClassifier(hidden_layer_sizes=(256, 128, 64), learning_rate='adaptive'),
-                   param_grid, cv=10, iid=False)
+mlp = GridSearchCV(MLPClassifier(hidden_layer_sizes=(512, 256, 128, 64, 32),verbose=True, early_stopping=True, learning_rate='adaptive', solver='adam'),
+                   param_grid, cv=5, iid=False)
 
 # Start training
 mlp.fit(X_train, y_train) 
@@ -87,8 +87,8 @@ print("Predicting people's names on the test set")
 t0 = time()
 y_pred = mlp.predict(X_test)
 print("done in %0.3fs" % (time() - t0))
-print(classification_report(y_test, y_pred, target_names=os.listdir("dataset")))
-print(confusion_matrix(y_test, y_pred, labels=range(len(os.listdir("dataset")))))
+print(classification_report(y_test, y_pred, target_names=le.classes_))
+print(confusion_matrix(y_test, y_pred, labels=range(len(le.classes_))))
 
 # write the actual face recognition model to disk
 f = open(args["recognizer"], "wb")

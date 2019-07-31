@@ -21,7 +21,7 @@ ap.add_argument("-d", "--detector", required=False, default= 'face_detection_mod
 	help="path to OpenCV's deep learning face detector")
 ap.add_argument("-m", "--embedding-model", required=False, default= 'openface_nn4.small2.v1.t7',
 	help="path to OpenCV's deep learning face embedding model")
-ap.add_argument("-r", "--recognizer", required=False, default= 'output/recognizer2.pickle',
+ap.add_argument("-r", "--recognizer", required=False, default= 'output/recognizer11.pickle',
 	help="path to model trained to recognize faces")
 ap.add_argument("-l", "--le", required=False, default='output/le.pickle',
 	help="path to label encoder")
@@ -46,7 +46,7 @@ le = pickle.loads(open(args["le"], "rb").read())
 
 # initialize the video stream, then allow the camera sensor to warm up
 print("[INFO] starting video stream...")
-vs = VideoStream(src=0,resolution=(640, 480)).start()
+vs = VideoStream(src=0).start()
 time.sleep(2.0)
 
 # start the FPS throughput estimator
@@ -56,17 +56,17 @@ fps = FPS().start()
 while True:
 	# grab the frame from the threaded video stream
 	frame = vs.read()
-
 	# resize the frame to have a width of 600 pixels (while
 	# maintaining the aspect ratio), and then grab the image
 	# dimensions
-	frame = imutils.resize(frame, width=600)
+	# frame = imutils.resize(frame, width=600)
 	(h, w) = frame.shape[:2]
 
 	# construct a blob from the image
 	imageBlob = cv2.dnn.blobFromImage(
 		cv2.resize(frame, (300, 300)), 1.0, (300, 300),
 		(104.0, 177.0, 123.0), swapRB=False, crop=True)
+
 
 	# apply OpenCV's deep learning-based face detector to localize
 	# faces in the input image

@@ -17,9 +17,9 @@ import os
 
 # construct the argument parser and parse the arguments
 ap = argparse.ArgumentParser()
-ap.add_argument("-i", "--dataset", required=False,default='train_dataset',
+ap.add_argument("-i", "--dataset", required=False,default='test_dataset',
 	help="path to input directory of faces + images")
-ap.add_argument("-e", "--embeddings", required=False, default='output/embeddings_train.pickle',
+ap.add_argument("-e", "--embeddings", required=False, default='output/embeddings_testV.pickle',
 	help="path to output serialized db of facial embeddings")
 ap.add_argument("-d", "--detector", required=False,default='face_detection_model',
 	help="path to OpenCV's deep learning face detector")
@@ -62,7 +62,7 @@ for (i, imagePath) in enumerate(imagePaths):
 	# maintaining the aspect ratio), and then grab the image
 	# dimensions
 	image = cv2.imread(imagePath)
-	image = imutils.resize(image, width=600)
+	# image = imutils.resize(image, width=600)
 	(h, w) = image.shape[:2]
 
 	# construct a blob from the image

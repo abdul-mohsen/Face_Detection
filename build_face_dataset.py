@@ -35,7 +35,7 @@ except:
 # and initialize the total number of example faces written to disk
 # thus far
 print("[INFO] starting video stream...")
-vs = VideoStream(src=0).start()
+vs = VideoStream(src=2).start()
 # vs = VideoStream(usePiCamera=True).start()
 print(total)
 time.sleep(2.0)
