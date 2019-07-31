@@ -45,7 +45,7 @@ def identify(imgaepath, detector='face_detection_model', embedding_model='openfa
 
 		# construct a blob from the image
 		imageBlob = cv2.dnn.blobFromImage(
-			image, 1.0, image[:-1],
+			cv2.resize(image, (300, 300)), 1.0, (300, 300),
 			(104.0, 177.0, 123.0), swapRB=False, crop=True)
 
 		# apply OpenCV's deep learning-based face detector to localize
@@ -79,7 +79,7 @@ def identify(imgaepath, detector='face_detection_model', embedding_model='openfa
 				# through our face embedding model to obtain the 128-d
 				# quantification of the face
 				faceBlob = cv2.dnn.blobFromImage(face, 1.0 / 255, (96, 96),
-					(0, 0, 0), swapRB=True, crop=True)
+					(0, 0, 0), swapRB=True, crop=False)
 				embedder.setInput(faceBlob)
 				vec = embedder.forward()
 
